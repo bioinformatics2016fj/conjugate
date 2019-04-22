@@ -19,13 +19,10 @@ function newton(f, g, h, x0;
         ϵg=0.01,
         maxIterations=128,
         debug=false)
-
     xk = x0
     fk = f(xk...)
-
     x=[]
     y=[]
-
     for i in 1:maxIterations
         # iteration
         #d =-g(xk...)
@@ -41,8 +38,6 @@ function newton(f, g, h, x0;
             println("the_final_x=",xn," the_final_y=",fn)
             x=convert(Array{Float64,1},x)
             y=convert(Array{Float64,1},y)
-
-
             return x,y
         end
         if debug
@@ -54,6 +49,7 @@ function newton(f, g, h, x0;
     println("WARN:", maxIterations, " iterations have been exceeded!")
 end
 
+#test
 newton_x,newton_y=newton(
     (x,y)->x^2+3x*y+3y^2-x-2y,
     (x,y)->[2x+3y-1,3x+6y-2],
@@ -62,8 +58,9 @@ newton_x,newton_y=newton(
     debug=false
     )
 
-#最速下降法
 
+
+#最速下降法
 function steepest_descent(f, g, x0;
         ϵx=0.001, # precision for step size
         ϵf=0.001,
@@ -74,7 +71,6 @@ function steepest_descent(f, g, x0;
     fk = f(xk...)
     x=[]
     y=[]
-
     for i in 1:maxIterations
         # iteration
         d =-g(xk...)
@@ -84,16 +80,12 @@ function steepest_descent(f, g, x0;
         fn = f(xn...)
         push!(x,xk[1])
         push!(y,xk[2])
-
         # convegence?
         if (norm(δ)<=ϵx)&&(abs(fn-fk)<=ϵf)&&(norm(d)<=ϵg)
             println("Convergence is reached after ", i, " iterations.")
             println("the_final_x=",xn," the_final_y=",fn," d=",d," δ=",δ)
             x=convert(Array{Float64,1},x)
             y=convert(Array{Float64,1},y)
-
-
-
             return  x,y
         end
         if debug
@@ -104,12 +96,16 @@ function steepest_descent(f, g, x0;
     end
     println("WARN:", maxIterations, " iterations have been exceeded!")
 end
+
+#test
 sd_x,sd_y=steepest_descent(
     (x,y)->x^2+3x*y+3y^2-x-2y,
     (x,y)->[2x+3y-1,3x+6y-2],
     [1,1] ,
     debug=false
     )
+
+
 #共轭梯度法
 function ConjugateGradientFSO(f, g, h, x0;
         ϵx=0.01, # precision for step size
@@ -144,7 +140,6 @@ function ConjugateGradientFSO(f, g, h, x0;
         y=convert(Array{Float64,1},y)
         return x,y
     end
-
     for i in 1:maxIterations
         # iteration
         xn = xk .+ δ
@@ -175,6 +170,8 @@ function ConjugateGradientFSO(f, g, h, x0;
     end
     #println("WARN:", maxIterations, " iterations have been exceeded!")
 end
+
+#test
 CG_x,CG_y=ConjugateGradientFSO(
     (x,y)->x^2+3x*y+3y^2-x-2y,
     (x,y)->[2x+3y-1,3x+6y-2],
@@ -182,6 +179,7 @@ CG_x,CG_y=ConjugateGradientFSO(
     [1,1],
     debug=false
     )
+
 #画图
 function final_figure(f,newton_x,newton_y,sd_x,sd_y,CG_x,CG_y)
     newton=layer(x=newton_x,y=newton_y, label=[ string(i) for i in 1:length(newton_x)],
@@ -194,7 +192,7 @@ function final_figure(f,newton_x,newton_y,sd_x,sd_y,CG_x,CG_y)
     return plot(newton,SD,GC,y,Guide.manual_color_key("Method",["newton", "steepest_descent","ConjugateGradientFSO"],
             ["red","blue","yellow"]))
 end
-
+#result
 final_figure(
     (x,y)->x^2+3x*y+3y^2-x-2y,
     newton_x,
