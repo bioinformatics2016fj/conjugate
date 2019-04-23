@@ -21,8 +21,8 @@ function newton(f, g, h, x0;
         debug=false)
     xk = x0
     fk = f(xk...)
-    x=[]
-    y=[]
+    x=[] 
+    y=[]    #创建Any型空数组用于存放每次迭代的xk
     for i in 1:maxIterations
         # iteration
         #d =-g(xk...)
@@ -35,10 +35,10 @@ function newton(f, g, h, x0;
         # convegence?
         if (abs(fn-fk)<=ϵf)
             println("Convergence is reached after ", i, " iterations.")
-            println("the_final_x=",xn," the_final_y=",fn)
+            println("the_final_x=",xn," the_final_y=",fn)   #输出搜索的点
             x=convert(Array{Float64,1},x)
-            y=convert(Array{Float64,1},y)
-            return x,y
+            y=convert(Array{Float64,1},y)   #将Any型的矩阵转化为Float型便于画图
+            return x,y                      #返回x,y
         end
         if debug
             println("i=",i," xk=", xk,)
@@ -70,7 +70,7 @@ function steepest_descent(f, g, x0;
     xk = x0
     fk = f(xk...)
     x=[]
-    y=[]
+    y=[]     #创建Any型空数组用于存放每次迭代的xk
     for i in 1:maxIterations
         # iteration
         d =-g(xk...)
@@ -83,10 +83,10 @@ function steepest_descent(f, g, x0;
         # convegence?
         if (norm(δ)<=ϵx)&&(abs(fn-fk)<=ϵf)&&(norm(d)<=ϵg)
             println("Convergence is reached after ", i, " iterations.")
-            println("the_final_x=",xn," the_final_y=",fn," d=",d," δ=",δ)
+            println("the_final_x=",xn," the_final_y=",fn," d=",d," δ=",δ)   #输出搜索的点
             x=convert(Array{Float64,1},x)
-            y=convert(Array{Float64,1},y)
-            return  x,y
+            y=convert(Array{Float64,1},y)   #将Any型的矩阵转化为Float型便于画图
+            return  x,y                     #返回x,y
         end
         if debug
             println("i=",i, " α=", α, " xk=", xk, " d=", d, " δ= ",δ)
@@ -129,7 +129,7 @@ function ConjugateGradientFSO(f, g, h, x0;
     #fn = f(xn...)
     #gn = g(xn...)
     x=[]
-    y=[]
+    y=[]     #创建Any型空数组用于存放每次迭代的xk
     push!(x,xk[1])
     push!(y,xk[2])
     if (norm(gk)<=ϵg)
@@ -137,7 +137,7 @@ function ConjugateGradientFSO(f, g, h, x0;
         println("the_final_x=",xk," the_final_y=",fk)
 
         x=convert(Array{Float64,1},x)
-        y=convert(Array{Float64,1},y)
+        y=convert(Array{Float64,1},y)   #将Any型的矩阵转化为Float型便于画图
         return x,y
     end
     for i in 1:maxIterations
@@ -158,7 +158,7 @@ function ConjugateGradientFSO(f, g, h, x0;
             println("Convergence is reached after ", i, " iterations.")
             println("the_final_x=",xn," the_final_y=",fn)
             x=convert(Array{Float64,1},x)
-            y=convert(Array{Float64,1},y)
+            y=convert(Array{Float64,1},y)   #将Any型的矩阵转化为Float型便于画图
             return x,y
         end
         xk = xn
@@ -187,10 +187,10 @@ function final_figure(f,newton_x,newton_y,sd_x,sd_y,CG_x,CG_y)
     SD=layer(x=sd_x,y=sd_y, label=[ string(i) for i in 1:length(sd_x)],
             Geom.point,Geom.line,Geom.label,Theme(default_color=colorant"blue"))
     GC=layer(x=CG_x,y=CG_y, label=[ string(i) for i in 1:length(CG_x)],
-            Geom.point,Geom.line,Geom.label,Theme(default_color=colorant"yellow"))
+            Geom.point,Geom.line,Geom.label,Theme(default_color=colorant"yellow")) #定义颜色
     y=layer(f,0,1,0,1)
     return plot(newton,SD,GC,y,Guide.manual_color_key("Method",["newton", "steepest_descent","ConjugateGradientFSO"],
-            ["red","blue","yellow"]))
+            ["red","blue","yellow"]))   #color_key
 end
 #result
 final_figure(
